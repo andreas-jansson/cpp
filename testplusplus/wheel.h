@@ -3,7 +3,6 @@
 #include <iostream>
 using namespace std;
 
-
 class Wheel {
     double radius;
     double rpm;
@@ -15,29 +14,32 @@ class Wheel {
     public:
     
     Wheel(){
-        this->radius=0;
+//        cout<<"c-tor wheel:"<<this<<endl;
+        this->radius=10;
         this->rpm=0;
         this->angle=0;
         this->pressure=0;
     }
     
-    Wheel(double rad){
+    Wheel(double rad, double newRpm, double newAngle){
         this->radius=rad;
+        this->rpm=newRpm;
+        this->angle=newAngle;
+
     }
-    
-    
     
     void wheel_radius(double rad){
         this->radius=rad;
     }
 
     bool set_rpm(double newRpm){
-        cout<<"yo"<<this<<endl;
+//        cout<<"this(set_rpm): "<<this<<endl;
         this->rpm=newRpm;
         return true;
     }
     
     double get_rpm(){
+        cout<<"rpm: "<<rpm<<" this: "<<this<<endl;
         return this->rpm;
     }
 
@@ -82,13 +84,16 @@ class Car{
   double linearVelocity;
   double angularVelocity;
 
-  Wheel *flWheel;
-  Wheel *frWheel;
-  Wheel *rlWheel;
-  Wheel *rrWheel;
+
   
     public:
+    Wheel *flWheel;
+    Wheel *frWheel;
+    Wheel *rlWheel;
+    Wheel *rrWheel;
+
     Color color;
+    
     Car(){
         color=red;
         model="base";
@@ -96,15 +101,15 @@ class Car{
         linearVelocity=0;
         angularVelocity=0;
         
-        this->flWheel = new Wheel();
-        this->frWheel = new Wheel();
-        this->rlWheel = new Wheel();
-        this->rrWheel = new Wheel();
-        cout<<"flWheel: "<<flWheel<<endl;
-        
+        flWheel=new Wheel();
+        frWheel=new Wheel();
+        rlWheel=new Wheel();
+        rrWheel=new Wheel();
+//        unique_ptr<Wheel> flWheel, frWheel, rlWheel, rrWheel;
+
     }
     
-    Car(Color ncolor, string nmodel, int nweight, double nlinearVelocity, double nangularVelocity){
+    Car(Color ncolor, string nmodel, int nweight, double nlinearVelocity, double nangularVelocity):Car(){
           color=ncolor;
           model=nmodel;
           weight= nweight;
@@ -116,20 +121,8 @@ class Car{
         return this->model;
     }
     
-    void get_speedinfo(){
-        double rpm=flWheel->get_rpm();
-        cout<<"flWheel rpm: "<<rpm<<::endl;
-        cout<<"flWheel angle: "<<flWheel->get_angle()<<::endl;
-        
-        cout<<"frWheel rpm: "<<frWheel->get_rpm()<<::endl;
-        cout<<"frWheel angle: "<<frWheel->get_angle()<<::endl;
-        
-        cout<<"rlWheel rpm: "<<rlWheel->get_rpm()<<::endl;
-        cout<<"rlWheel angle: "<<rlWheel->get_angle()<<::endl;
-        
-        cout<<"rrWheel rpm: "<<rrWheel->get_rpm()<<::endl;
-        cout<<"rrWheel angle: "<<rrWheel->get_angle()<<::endl;
-
+    double get_speedinfo(){
+        return linearVelocity;
     }
     
     bool setSpeed(double speed){
@@ -149,32 +142,24 @@ class Car{
         linearVelocity=old_car.weight;
         angularVelocity=old_car.weight;
         
-        flWheel = new Wheel(old_car.flWheel->get_radius());
-        flWheel->set_rpm(old_car.flWheel->get_rpm());
-        
-        frWheel = new Wheel(old_car.flWheel->get_radius());
-        frWheel->set_rpm(old_car.frWheel->get_rpm());
-
-        rlWheel = new Wheel(old_car.flWheel->get_radius());
-        rlWheel->set_rpm(old_car.rlWheel->get_rpm());
-
-        rrWheel = new Wheel(old_car.flWheel->get_radius());
-        rrWheel->set_rpm(old_car.rrWheel->get_rpm());
-        
+        flWheel = new Wheel((old_car.flWheel->get_radius()), (old_car.flWheel->get_rpm()), (old_car.flWheel->get_angle()));
+        frWheel = new Wheel((old_car.flWheel->get_radius()), (old_car.flWheel->get_rpm()), (old_car.flWheel->get_angle()));
+        rlWheel = new Wheel((old_car.flWheel->get_radius()), (old_car.flWheel->get_rpm()), (old_car.flWheel->get_angle()));
+        rrWheel = new Wheel((old_car.flWheel->get_radius()), (old_car.flWheel->get_rpm()), (old_car.flWheel->get_angle()));
     }
     
     ~Car(){
-        cout<<"d-structor"<<::endl;
+        cout<<"d-structor"<<endl;
 
         delete flWheel;
         delete frWheel;
         delete rlWheel;
         delete rrWheel;
         
-        weight=0;
-        model="";
-        linearVelocity=0;
-        angularVelocity=0;
+        this->weight=0;
+        this->model="";
+        this->linearVelocity=0;
+        this->angularVelocity=0;
         
 
     };
